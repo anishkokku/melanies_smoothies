@@ -44,9 +44,16 @@ if ingredients_list:
             st.success(f'Your Smoothie is ordered,{name_on_order}', icon="✅")
 
 
-
+# API section with error handling
 smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-st.text(smoothiefroot_response.json())
+
+if smoothiefroot_response.status_code == 200:
+    try:
+        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+    except Exception:
+        st.warning("Fruit API returned non-JSON response.")
+else:
+    st.warning("Fruit API is currently unreachable. Please refresh in a moment.")
 
 
 
