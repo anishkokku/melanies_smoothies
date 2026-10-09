@@ -27,10 +27,13 @@ ingredients_list = st.multiselect(
     max_selections=5
 )
 if ingredients_list:
-     ingredients_string=''
-     for f in ingredients_list:
-         ingredients_string+=f+ " "
-     #st.write(ingredients_string)
+    ingredients_string = ''
+
+    for fruit_chosen in ingredients_list:
+        ingredients_string += fruit_chosen + ' '
+        st.subheader(fruit_chosen + ' Nutrition Information')
+        smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)
+        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
 
 
      my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
@@ -45,15 +48,8 @@ if ingredients_list:
 
 
 # API section with error handling
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+# New section to display smoothiefroot nutrition information
 
-if smoothiefroot_response.status_code == 200:
-    try:
-        sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
-    except Exception:
-        st.warning("Fruit API returned non-JSON response.")
-else:
-    st.warning("Fruit API is currently unreachable. Please refresh in a moment.")
 
 
 
